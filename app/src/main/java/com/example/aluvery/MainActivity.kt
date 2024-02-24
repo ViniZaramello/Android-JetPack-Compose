@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -29,15 +28,19 @@ import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.aluvery.extensions.toBrazilianCurrency
+import com.example.aluvery.model.ProductModel
 import com.example.aluvery.ui.theme.AluveryTheme
 import com.example.aluvery.ui.theme.Purple500
 import com.example.aluvery.ui.theme.Teal200
+import java.math.BigDecimal
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,12 +56,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyFirstComposable() {
-    Text(text = "My first composable")
-}
-
-@Composable
-fun ProductItem() {
+fun ProductItem(productModel: ProductModel) {
     Surface(
         shape = RoundedCornerShape(15.dp),
         shadowElevation = 8.dp
@@ -83,20 +81,21 @@ fun ProductItem() {
                     .fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = painterResource(id = productModel.image),
                     contentDescription = null,
                     Modifier
                         .size(imageSize)
                         .offset(y = imageSize / 2)
                         .clip(shape = CircleShape)
-                        .align(BottomCenter)
+                        .align(BottomCenter),
+                    contentScale = ContentScale.Crop
 
                 )
             }
             Spacer(modifier = Modifier.height(imageSize / 2))
             Column(Modifier.padding(16.dp)) {
                 Text(
-                    text = "Texto asdasdas dasdasd ioioioioi ioioio",
+                    text = productModel.name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight(700),
                     maxLines = 2,
@@ -104,7 +103,7 @@ fun ProductItem() {
 
                 )
                 Text(
-                    text = "R$ 14,99",
+                    text = productModel.value.toBrazilianCurrency(),
                     Modifier.padding(top = 8.dp),
                     fontSize = 14.sp,
                     fontWeight = FontWeight(400)
@@ -138,9 +137,27 @@ fun ProductSection() {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(Modifier)
-            ProductItem()
-            ProductItem()
-            ProductItem()
+            ProductItem(
+                ProductModel(
+                    name = "x-ratão",
+                    value = BigDecimal("10.99"),
+                    image = R.drawable.burger
+                )
+            )
+            ProductItem(
+                ProductModel(
+                    name = "meia Tietê com borda brumadinho",
+                    value = BigDecimal("39.99"),
+                    image = R.drawable.pizza
+                )
+            )
+            ProductItem(
+                ProductModel(
+                    name = "porção batata 200gr",
+                    value = BigDecimal("5.90"),
+                    image = R.drawable.fries
+                )
+            )
             Spacer(Modifier)
         }
     }
@@ -149,7 +166,13 @@ fun ProductSection() {
 @Preview(showBackground = true)
 @Composable
 fun ProductItemPreview() {
-    ProductItem()
+    ProductItem(
+        ProductModel(
+            name = "lorem",
+            value = BigDecimal("14.99"),
+            image = R.drawable.burger
+        )
+    )
 }
 
 @Preview(showBackground = true)

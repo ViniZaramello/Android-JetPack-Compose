@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,13 +48,31 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AluveryTheme {
-                Surface {
-                    ProductSection()
-                }
+            App()
+        }
+    }
+}
+
+@Composable
+fun App(){
+    AluveryTheme {
+        Surface {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Spacer(modifier = Modifier)
+                ProductSection("Promoções")
+                ProductSection("Doces")
+                ProductSection("Bebidas")
+                Spacer(modifier = Modifier)
             }
         }
     }
+
+
 }
 
 @Composable
@@ -114,14 +134,12 @@ fun ProductItem(productModel: ProductModel) {
 }
 
 @Composable
-fun ProductSection() {
+fun ProductSection(topic: String) {
     Column {
         Text(
-            text = "Promoções",
+            text = topic,
             Modifier.padding(
-                start = 16.dp,
-                top = 16.dp,
-                end = 16.dp
+                start = 16.dp
             ),
             fontSize = 20.sp,
             fontWeight = FontWeight(400)
@@ -129,8 +147,7 @@ fun ProductSection() {
         Row(
             Modifier
                 .padding(
-                    top = 8.dp,
-                    bottom = 16.dp
+                    top = 8.dp
                 )
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState()),
@@ -139,16 +156,16 @@ fun ProductSection() {
             Spacer(Modifier)
             ProductItem(
                 ProductModel(
-                    name = "x-ratão",
-                    value = BigDecimal("10.99"),
-                    image = R.drawable.burger
+                    name = "meia Tietê com borda brumadinho",
+                    value = BigDecimal("39.99"),
+                    image = R.drawable.pizza
                 )
             )
             ProductItem(
                 ProductModel(
-                    name = "meia Tietê com borda brumadinho",
-                    value = BigDecimal("39.99"),
-                    image = R.drawable.pizza
+                    name = "x-ratão",
+                    value = BigDecimal("10.99"),
+                    image = R.drawable.burger
                 )
             )
             ProductItem(
@@ -163,6 +180,11 @@ fun ProductSection() {
     }
 }
 
+@Preview(showSystemUi = true)
+@Composable
+fun AppPreview(){
+    App()
+}
 @Preview(showBackground = true)
 @Composable
 fun ProductItemPreview() {
@@ -178,5 +200,5 @@ fun ProductItemPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ProductSectionPreview() {
-    ProductSection()
+    ProductSection("Promoções")
 }

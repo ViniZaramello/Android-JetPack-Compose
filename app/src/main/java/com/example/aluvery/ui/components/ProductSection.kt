@@ -28,7 +28,8 @@ fun ProductSection(
         Text(
             text = title,
             Modifier.padding(
-                start = 16.dp
+                start = 16.dp,
+                end = 16.dp
             ),
             fontSize = 20.sp,
             fontWeight = FontWeight(400)

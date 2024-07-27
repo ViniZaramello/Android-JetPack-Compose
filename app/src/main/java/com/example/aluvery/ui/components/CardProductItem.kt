@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -24,14 +25,16 @@ import com.example.aluvery.extensions.toBrazilianCurrency
 import com.example.aluvery.model.ProductModel
 import com.example.aluvery.sampledata.sampleProducts
 import com.example.aluvery.ui.theme.AluveryTheme
+import java.math.BigDecimal
 
 @Composable
 fun CardProductItem(
     product: ProductModel,
+    modifier: Modifier = Modifier,
     elevation: Dp = 4.dp
 ) {
     ElevatedCard(
-        Modifier
+        modifier
             .fillMaxWidth()
             .heightIn(150.dp),
         elevation = CardDefaults.cardElevation(
@@ -60,7 +63,27 @@ fun CardProductItem(
                 Text(
                     text = product.value.toBrazilianCurrency()
                 )
+                }
+
+            product.description?.let {
+                Text(
+                    text = product.description,
+                    Modifier
+                        .padding(16.dp)
+                )
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun CardProductOnlyItemPreview() {
+    AluveryTheme {
+        Surface {
+            CardProductItem(
+                product = sampleProducts.random(),
+            )
         }
     }
 }
@@ -71,7 +94,11 @@ private fun CardProductItemPreview() {
     AluveryTheme {
         Surface {
             CardProductItem(
-                product = sampleProducts.random(),
+                product = ProductModel(
+                    name = "teste",
+                    value = BigDecimal("9.99"),
+                    description = LoremIpsum(50).values.first()
+                )
             )
         }
     }

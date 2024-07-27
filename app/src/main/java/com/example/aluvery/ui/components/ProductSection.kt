@@ -22,9 +22,10 @@ import com.example.aluvery.ui.theme.AluveryTheme
 @Composable
 fun ProductSection(
     title: String,
-    products: List<ProductModel>
+    products: List<ProductModel>,
+    modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(modifier) {
         Text(
             text = title,
             Modifier.padding(

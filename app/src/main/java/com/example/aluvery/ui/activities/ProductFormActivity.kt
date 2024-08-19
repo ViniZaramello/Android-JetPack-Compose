@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,24 +40,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.aluvery.R
+import com.example.aluvery.dao.ProductDao
 import com.example.aluvery.model.ProductModel
 import com.example.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
 
 
 class ProductFormActivity : ComponentActivity() {
+
+    private val dao = ProductDao()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Surface {
-                ProductFormScreen()
+                ProductFormScreen(onSaveClick = { product ->
+                    dao.save(product)
+                    finish()
+                })
             }
         }
     }
 }
 
 @Composable
-fun ProductFormScreen() {
+fun ProductFormScreen(onSaveClick: (ProductModel) -> Unit = {}) {
     Column(
         Modifier
             .fillMaxSize()
@@ -81,7 +86,6 @@ fun ProductFormScreen() {
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(id = R.drawable.placeholder),
                 error = painterResource(id = R.drawable.placeholder)
-
             )
         }
         TextField(value = url, onValueChange = {
@@ -121,12 +125,13 @@ fun ProductFormScreen() {
             val annotatedString = AnnotatedString(formattedString)
             TransformedText(annotatedString, OffsetMapping.Identity)
         }
-        TextField(value = price, onValueChange = {
-            it: String -> price = it
-        },
+        TextField(
+            value = price, onValueChange = { it: String ->
+                price = it
+            },
             Modifier.fillMaxWidth(), label = {
-            Text(text = "Preço")
-        },
+                Text(text = "Preço")
+            },
             visualTransformation = priceFormatter,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal,
@@ -166,6 +171,7 @@ fun ProductFormScreen() {
                     description = description
                 )
                 Log.i("ProductFormActivity", "$product")
+                onSaveClick(product)
             }, Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(4.dp)
         ) {

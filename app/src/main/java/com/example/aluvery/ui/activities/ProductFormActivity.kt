@@ -117,6 +117,7 @@ fun ProductFormScreen(onSaveClick: (ProductModel) -> Unit = {}) {
         var price by remember {
             mutableStateOf("")
         }
+        //@TODO: Ajustar bug do preço ao salvar
         val priceFormatter = VisualTransformation { textInputValue ->
             val rawString = textInputValue.text
             val formattedString = rawString.replace(Regex("[^\\d]"), "")
@@ -175,7 +176,7 @@ fun ProductFormScreen(onSaveClick: (ProductModel) -> Unit = {}) {
             }, Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(4.dp)
         ) {
-            Text(text = "teste")
+            Text(text = "Salvar")
         }
         Spacer(modifier = Modifier)
     }

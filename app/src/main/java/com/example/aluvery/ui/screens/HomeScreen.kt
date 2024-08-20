@@ -24,34 +24,48 @@ import com.example.aluvery.ui.components.ProductSection
 import com.example.aluvery.ui.components.SearchTextField
 import com.example.aluvery.ui.theme.AluveryTheme
 
+class HomeScreenUiState(searchText: String = "") {
+
+    var text by mutableStateOf(searchText)
+
+    val searchedProduct
+        get() =
+            if (text.isNotBlank()) {
+                sampleProducts.filter { productModel ->
+                    productModel.name.contains(
+                        text,
+                        ignoreCase = true
+                    ) ||
+                            productModel.description?.contains(
+                                text,
+                                ignoreCase = true
+                            ) ?: false
+                }
+            } else emptyList()
+
+    fun isShowSections(): Boolean {
+        return text.isBlank()
+    }
+
+    val onSearchChange: (String) -> Unit = {
+        text = searchText
+    }
+}
+
 @Composable
 fun HomeScreen(
     sections: Map<String, List<ProductModel>>,
-    searchText: String = ""
+    state: HomeScreenUiState = HomeScreenUiState()
 ) {
     Column {
-        var text by remember {
-            mutableStateOf(searchText)
+        val text = state.text
+        val searchProduct = remember(text) {
+            state.searchedProduct
         }
         SearchTextField(
             searchText = text,
-            onSearchChange = {
-                text = it
-            },
+            onSearchChange = state.onSearchChange
         )
-        val searchProduct = remember(text) {
-            sampleProducts.filter { productModel ->
-                productModel.name.contains(
-                    text,
-                    ignoreCase = true
-                ) ||
-                        productModel.description?.contains(
-                            text,
-                            ignoreCase = true
-                        ) ?: false
-            }
-        }
-
         LazyColumn(
             Modifier
                 .padding(top = 16.dp)
@@ -60,7 +74,7 @@ fun HomeScreen(
             contentPadding = PaddingValues(bottom = 16.dp)
 
         ) {
-            if (text.isBlank()) {
+            if (state.isShowSections()) {
                 for (section in sections) {
                     val title = section.key
                     val products = section.value
@@ -98,7 +112,7 @@ fun HomeScreenWithSearchBarPreview() {
         Surface {
             HomeScreen(
                 sampleSections,
-                searchText = "pizza"  //testar filtro
+                state = HomeScreenUiState(searchText = "a")  //testar filtro
             )
         }
     }
